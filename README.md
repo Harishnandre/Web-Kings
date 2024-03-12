@@ -3,7 +3,7 @@ Team Name: Web Kings
 Team Members Name:-
                  1) Nandre Harish (Harishnandre) https://github.com/Harishnandre
                  2) Kumar Nishant (Nishant07-web) https://github.com/Nishant07-web
-                 3) Shatanu Jaitly 
+                 3) Shatanu Jaitly (jaitly8x) https://github.com/jaitly8x
                  4) Bolishetty Anvitha (Anvitha26) https://github.com/Anvitha26
 Proposed Features:-
                 1) User can register and log in.
