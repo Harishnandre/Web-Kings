@@ -1,0 +1,48 @@
+.usersignup-bg-container{
+    background-color: rgb(230, 177, 31);
+    height: 100vh;
+    
+}
+.signup-form{
+    background-color: white;
+    padding: 40px;
+    margin-top: 10%;
+    font-family: "Roboto";
+    border:1px solid black;
+}
+.signup-heading{
+  font-weight: bold;
+  margin-bottom: 20px;
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+}
+label{
+    padding:10px 0px 5px 5px;
+}
+.canteen-home-heading{
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+.add-canteen-card{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    padding: 20px;
+    background-image: linear-gradient(135deg, #FFF6B7 10%, #F6416C 100%);
+    border: 1px black solid;
+}
+.canteen-cards{
+    background-image: linear-gradient(135deg, #ed6ea0 10%, #ec8c69 100%);
+    padding: 10px;
+    margin-bottom: 10px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+.canteen-cards-heading{
+     font-size: 28px;
+}
+.modal{
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+}
+.no-item-text{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+.can-own-food-items-heading{
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-weight: bold;
+}

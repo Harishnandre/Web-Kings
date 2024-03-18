@@ -1,0 +1,31 @@
+.Home-page-nav-bar{
+    background: linear-gradient(166deg, rgb(248, 161, 27) 13.07%, rgb(241, 242, 11) 62.27%);
+}
+.canteens-cards{
+    background-color: rgb(248, 245, 242);
+    font-family: 'Courier New', Courier, monospace;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid black;
+}
+.canteen-list-heading{
+    font-family:'Courier New', Courier, monospace;
+    font-weight: bold;
+    padding-top: 20px;
+}
+.each-food-card{
+    padding: 10px;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    border:1px solid black;
+}
+.canteen-menu-heading{
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+.user-home-bg-container{
+    height: 100vh;
+    background-color: aliceblue;
+}
+.no-item-text{
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+
+}

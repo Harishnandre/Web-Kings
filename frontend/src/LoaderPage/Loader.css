@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Madimi+One&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Madimi+One&family=Oswald:wght@200..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+.loader-page-nav-links{
+    font-family: "Madimi One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+.loader-page-bg-image{
+   background-attachment: fixed;
+  height: 100vh;
+  background-size: cover;
+  
+}
+
+.loader-page-container-heading{
+
+    font-family: "Oswald", sans-serif;
+    font-optical-sizing: auto;
+    font-weight:500;
+    font-style: normal;
+    font-size: 100px;
+    color:rgb(144, 102, 30);
+    text-decoration: underline red 4px;
+    transform: ease;
+    transition: 1s;   
+}
+.loader-page-container-heading:hover{
+    transform: scale(1.1);
+}
+.loader-page-container{
+    padding: 10px;
+    transform: ease;
+    transition: 1s;
+}
+.loader-page-container:hover{
+    background-color:white;
+   
+}
+.loader-page-container-para{
+    font-family: "Oswald", sans-serif;
+    font-optical-sizing: auto;
+    font-weight:500;
+    font-style: normal;
+    font-size: 30px;
+    color:rgb(144, 102, 30);   
+}
+.loader-page-container-para:hover{
+  text-decoration: red 1px; 
+}
+
+
+
+
+.footer-bg-container {
+    background-color: #0d2436;
+}
+
+.footer-image {
+    width: 150px;
+}
+
+.footer-social-icon {
+    color: #5a7184;
+    font-size: 25px;
+}
+
+.footer-social-cards {
+    margin: 10px;
+    background-color: #152c3e;
+    padding: 7px 10px 7px 10px;
+    border-radius: 30px;
+}
+
+.footer-address {
+    padding: 10px;
+    color: #9c9c9c;
+    font-family: "Roboto";
+    font-size: 22px;
+}
+
+.footer-heading {
+    color: #5a7184;
+    font-family: "Roboto";
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.footer-para {
+    color: #5a7184;
+    font-family: "Roboto";
+    font-size: 20px;
+}
+
+.hr-line {
+    background-color: #5a7184;
+    width: 100%;
+}
+
+.footer-creater-name {
+    color: #9c9c9c;
+    font-family: "Roboto";
+    font-size: 22px;
+}
+.footer-section-heading{
+    font-family: "Madimi One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    color:rgb(186, 182, 182);
+}
