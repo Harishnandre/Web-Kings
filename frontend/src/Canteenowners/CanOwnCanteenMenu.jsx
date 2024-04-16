@@ -55,16 +55,18 @@ function CanOwnCanteenMenu() {
             </div>
           ) :  
          allFoodDetails.map((eachFood)=>{
+          if(eachFood.imageUrl === undefined) return <p></p>;
+          else{
              return (
                 <div className='col-12 col-md-4'>
                 <div className='each-food-card mb-3'> 
-                 <img src={eachFood.imageUrl} alt='' className='w-100'/>
+              <img src={eachFood.imageUrl} alt='' className='w-100'/>
                  <h2>{eachFood.name}</h2>
                  <p>{eachFood.price}/-</p>
                 <button className='btn btn-outline-danger' onClick={RemoveItem({eachFood})}>Remove Item</button>
                 </div>
                 </div>
-             )
+             )}
          })
         }
     </div>

@@ -3,7 +3,6 @@ import { Link, useNavigate} from "react-router-dom"
 import './Users.css'
 function Signup() {
 
-  
    const history = useNavigate()
     const [user,setUser] = useState({
         name : "",email: "",password: "",college_id:""
