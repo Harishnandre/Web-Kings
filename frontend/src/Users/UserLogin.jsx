@@ -15,33 +15,50 @@ function  UserLogin() {
         setUser({...user,[name]:value})
     }
     const LoginData = async(e) => {
-     e.preventDefault();
-     const {password,college_id}  = user
-
-     const res = await fetch("/api/users/login",{
-         method : "POST",
-         headers : {
-          "Content-Type": "application/json",
-           "User-Agent"  : "PostmanRuntime/7.37.0",
-           "Accept" : "*/*",
-           "Accept-Encoding" : "gzip, deflate, br",
-           "Connection" : "Connection"
-          }
-         ,
-         body : JSON.stringify({
-         password ,college_id 
-         })
-     });
-     const data  = await res.json();
+      e.preventDefault();
+      const {password, college_id} = user;
     
-     if(data.message === "Logged in!"){
-        alert("Login Successfull")
-        history("/userHome",{state:{userdetails:data.user}})
-     }
-     else {
-       alert(data.message)
-     }
-    }
+      try {
+        const res = await fetch("/api/users/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "User-Agent": "PostmanRuntime/7.37.0",
+            "Accept": "*/*",
+            "Accept-Encoding": "gzip, deflate, br",
+            "Connection": "Connection"
+          },
+          body: JSON.stringify({ password, college_id })
+        });
+    
+        // Log the raw response text
+        const textData = await res.text();
+        console.log('Response Text:', textData);
+    
+        // Try to parse the response as JSON
+        let data;
+        try {
+          data = JSON.parse(textData);
+        } catch (jsonError) {
+          console.error('JSON Parsing Error:', jsonError.message);
+          alert('Failed to parse server response');
+          return;
+        }
+    
+        // Handle the parsed JSON data
+        if (data.message === "Logged in!") {
+          alert("Login Successful");
+          history("/userHome", { state: { userdetails: data.user } });
+        } else {
+          alert(data.message);
+        }
+      } catch (error) {
+        console.error('Fetch Error:', error.message);
+        alert('Failed to connect to the server');
+      }
+    };
+    
+    
   return (
     <div className='usersignup-bg-container'>
     <div className='container '>

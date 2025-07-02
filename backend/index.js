@@ -18,7 +18,7 @@ app.use('/api/item', fooditemsroutes);
 app.use('/api/canowner', canownerroutes);
 
 mongoose  
-.connect("mongodb+srv://harishnandre1:Harish%402005@cluster0.qeqtarl.mongodb.net")
+.connect("mongodb+srv://harishnandre1:Harish%402005@cluster0.qeqtarl.mongodb.net/")
 .then(()=> {
     app.listen(3000);
 })

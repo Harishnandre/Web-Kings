@@ -29,3 +29,47 @@
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 
 }
+.canteen-menu-heading {
+  font-weight: bold;
+  font-size: 2.2rem;
+  color: #333;
+}
+
+.each-food-card {
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.2s;
+  background: #fff;
+}
+
+.each-food-card:hover {
+  transform: scale(1.02);
+}
+
+.no-item-text {
+  color: #777;
+  margin-top: 1rem;
+  font-weight: 500;
+}
+.user-home-bg-container {
+  background: #f9f9f9;
+  min-height: 100vh;
+  padding-bottom: 2rem;
+}
+
+.canteens-cards {
+  transition: transform 0.2s ease;
+  border-radius: 12px;
+  background-color: #fff;
+}
+
+.canteens-cards:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.canteen-list-heading {
+  font-size: 2.5rem;
+  color: #333;
+  font-weight: 600;
+}

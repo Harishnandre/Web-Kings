@@ -1,62 +1,61 @@
-import React from 'react'
-import './Loader.css'
+import React from 'react';
+import './Loader.css'; // Ensure styles below are added there
+
 export default function Footer() {
   return (
-    
-      <div id="footerSection">
-        <div class="footer-bg-container pt-5 pb-5">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12 col-md-6 col-lg-3 text-center text-md-left ">
-                       <h1 className='footer-section-heading' >FeedMe Now</h1>
+    <footer className="footer-bg-container pt-5 pb-4 text-white">
+      <div className="container">
+        <div className="row">
 
-                        <div class="d-flex flex-row justify-content-center justify-content-md-start">
-                            <div class="footer-social-cards">
-                                <i class="fa-brands footer-social-icon fa-google"></i>
-                            </div>
-                            <div class="footer-social-cards">
-                                <i class="fa-brands footer-social-icon fa-twitter"></i>
-                            </div>
-                            <div class="footer-social-cards">
-                                <i class="fa-brands footer-social-icon fa-instagram"></i>
-                            </div>
-                            <div class="footer-social-cards">
-                                <i class="fa-brands footer-social-icon fa-linkedin"></i>
-                            </div>
-                        </div>
-                        <p class="footer-address mt-2">Motilal Nehru National Institute of Technology, Parayagraj, Uttar Pradesh, India.</p>
-                    </div>
-                    <div class="col-6  col-lg-3 mt-3 mb-3">
-                        <h1 class="footer-heading pb-3">Get to know us</h1>
-                        <p class="footer-para">About us</p>
-                        <p class="footer-para">Career</p>
-                        <p class="footer-para">Where we deliver?</p>
-                        <p class="footer-para">Rate with us</p>
-                    </div>
-                    <div class="col-6  col-lg-3 mt-3 mb-3">
-                        <h1 class="footer-heading pb-3">Contact with Us</h1>
-                        <p class="footer-para">Facebook</p>
-                        <p class="footer-para">Twitter</p>
-                        <p class="footer-para">Instagram</p>
-                    </div>
-                    <div class="col-6  col-lg-3 mt-3 mb-3">
-                        <h1 class="footer-heading pb-3">Legal</h1>
-                        <p class="footer-para">Terms & Conditions</p>
-                        <p class="footer-para">Cookie Policy</p>
-                        <p class="footer-para">Privacy Policy</p>
-                    
-                    </div>
-                    <div class="col-12">
-                    
-                        <p class="footer-creater-name text-center">
-                            <i class="fa-regular fa-copyright"> </i> 2024 by Web Kings.
-                        </p>
-                    </div>
-                </div>
+          <div className="col-12 col-md-6 col-lg-3 mb-4">
+            <h2 className="footer-section-heading">FeedMe Now</h2>
+            <div className="d-flex justify-content-center justify-content-md-start mt-3">
+              <a href="#" className="footer-social-cards"><i className="fab fa-google"></i></a>
+              <a href="#" className="footer-social-cards"><i className="fab fa-twitter"></i></a>
+              <a href="#" className="footer-social-cards"><i className="fab fa-instagram"></i></a>
+              <a href="#" className="footer-social-cards"><i className="fab fa-linkedin"></i></a>
             </div>
+            <p className="footer-address mt-3">
+              Motilal Nehru National Institute of Technology, Prayagraj, Uttar Pradesh, India.
+            </p>
+          </div>
+
+          <div className="col-6 col-lg-3 mb-4">
+            <h5 className="footer-heading">Get to know us</h5>
+            <ul className="list-unstyled footer-para">
+              <li>About Us</li>
+              <li>Careers</li>
+              <li>Where We Deliver?</li>
+              <li>Rate With Us</li>
+            </ul>
+          </div>
+
+          <div className="col-6 col-lg-3 mb-4">
+            <h5 className="footer-heading">Connect With Us</h5>
+            <ul className="list-unstyled footer-para">
+              <li>Facebook</li>
+              <li>Twitter</li>
+              <li>Instagram</li>
+            </ul>
+          </div>
+
+          <div className="col-6 col-lg-3 mb-4">
+            <h5 className="footer-heading">Legal</h5>
+            <ul className="list-unstyled footer-para">
+              <li>Terms & Conditions</li>
+              <li>Cookie Policy</li>
+              <li>Privacy Policy</li>
+            </ul>
+          </div>
+
+          <div className="col-12 text-center mt-4">
+            <p className="footer-creater-name mb-0">
+              &copy; 2024 by <span className="text-warning">Web Kings</span>. All rights reserved.
+            </p>
+          </div>
+
         </div>
-    </div>
-     
-   
-  )
+      </div>
+    </footer>
+  );
 }

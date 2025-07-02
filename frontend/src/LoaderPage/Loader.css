@@ -106,4 +106,47 @@
     font-weight: 400;
     font-style: normal;
     color:rgb(186, 182, 182);
+}.footer-bg-container {
+  background-color: #1c1c1e;
+  color: #fff;
+}
+
+.footer-section-heading {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #f44336;
+}
+
+.footer-heading {
+  font-size: 1.2rem;
+  color: #ffc107;
+  margin-bottom: 1rem;
+}
+
+.footer-para li {
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.footer-para li:hover {
+  text-decoration: underline;
+  color: #f8f9fa;
+}
+
+.footer-social-cards {
+  font-size: 1.5rem;
+  color: #fff;
+  margin-right: 15px;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.footer-social-cards:hover {
+  color: #f44336;
+  transform: scale(1.2);
+}
+
+.footer-creater-name {
+  font-size: 0.9rem;
+  color: #aaa;
 }
