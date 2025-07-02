@@ -2,29 +2,36 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
 const app = express();
-// bodyparser is used to parse the body 
 app.use(bodyParser.json());
-// Enable CORS for all routes
 app.use(cors());
+
 const userroutes = require('./routes/userroutes');
 const fooditemsroutes = require('./routes/fooditemsroutes');
 const canownerroutes = require('./routes/Canownerroutes');
-const canteenroutes= require('./routes/canteenroutes');
+const canteenroutes = require('./routes/canteenroutes');
+const cartroutes = require('./routes/cartRoutes');
 
-app.use('/api/can',canteenroutes);
+app.use('/api/can', canteenroutes);
 app.use('/api/users', userroutes);
 app.use('/api/item', fooditemsroutes);
 app.use('/api/canowner', canownerroutes);
+app.use('/api/cart', cartroutes);
 
-mongoose  
-.connect("mongodb+srv://harishnandre1:Harish%402005@cluster0.qeqtarl.mongodb.net/")
-.then(()=> {
-    app.listen(3000);
-})
-.catch(err => {
-console.log(err);
-});
+mongoose
+  .connect(process.env.mongoDB_URI)
+  .then(() => {
+    app.listen(3000, () => {
+      console.log('Server running on port 3000');
+    });
+  })
+  .catch(err => {
+    console.log(err);
+  });
 
 
 

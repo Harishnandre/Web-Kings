@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, Link, useNavigate } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -7,20 +7,24 @@ import Navbar from 'react-bootstrap/Navbar';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import Footer from '../LoaderPage/Footer';
 import './Home.css';
+import { useCart } from '../Context/CartContext'; // Import CartContext
 
 function Home() {
   const expand = 'md';
   const location = useLocation();
-  const navigate = useNavigate();
-  const userdetails = location.state?.userdetails;
+  const userdetails = location.state.userdetails;
   const [canteens, setCanteen] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Cart context
+  const { cart, fetchCart } = useCart();
+
+  // Fetch cart on mount if userdetails exists
   useEffect(() => {
-    if (!userdetails) {
-      navigate('/userlogin');
+    if (userdetails?._id) {
+      fetchCart(userdetails._id);
     }
-  }, [userdetails, navigate]);
+  }, [userdetails, fetchCart]);
 
   useEffect(() => {
     const showCanteens = async () => {
@@ -38,9 +42,8 @@ function Home() {
     showCanteens();
   }, []);
 
-  if (!userdetails) {
-    return null; // or a loading spinner
-  }
+  // Unique items count for cart badge
+  const cartCount = cart.length;
 
   return (
     <>
@@ -62,7 +65,12 @@ function Home() {
               <Offcanvas.Body>
                 <Nav className="ms-auto">
                   <Nav.Link as={Link} to="#">Home</Nav.Link>
-                  <Nav.Link as={Link} to="#">My Cart</Nav.Link>
+                  <Nav.Link as={Link} to="/usercart" state={{ userId: userdetails._id }}>
+                    My Cart
+                    {cartCount > 0 && (
+                      <span className="badge bg-danger ms-2">{cartCount}</span>
+                    )}
+                  </Nav.Link>
                   <Nav.Link as={Link} to="#">Contact Us</Nav.Link>
                   <Nav.Link disabled>{userdetails.name}</Nav.Link>
                   <Link to="/" className="btn btn-outline-danger ms-3">Logout</Link>
@@ -81,6 +89,12 @@ function Home() {
                 <span className="visually-hidden">Loading...</span>
               </div>
             </div>
+          ) : canteens.length === 0 ? (
+            <div className="d-flex flex-column align-items-center justify-content-center my-5">
+  
+              <h2 className="text-danger mb-2">No Canteens Available</h2>
+              <p className="text-muted">Please check back later. We’ll have delicious options soon!</p>
+            </div>
           ) : (
             <div className="row g-4">
               {canteens.map((canteen) => (
@@ -93,6 +107,7 @@ function Home() {
                       </div>
                       <Link
                         to={`/usercanteenmenu/${canteen._id}`}
+                        state={{ userId: userdetails._id }}
                         className="btn btn-outline-danger mt-3"
                       >
                         View Menu
