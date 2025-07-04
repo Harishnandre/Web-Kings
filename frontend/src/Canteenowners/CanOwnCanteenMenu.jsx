@@ -9,8 +9,6 @@ function CanOwnCanteenMenu() {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [editTarget, setEditTarget] = useState(null);
   const [editForm, setEditForm] = useState({ name: '', price: '', description: '', imageUrl: '' });
-
-  // Add Food Modal State
   const [showAddModal, setShowAddModal] = useState(false);
   const [addForm, setAddForm] = useState({ name: '', price: '', description: '', imageUrl: '' });
   const [addError, setAddError] = useState('');
@@ -50,7 +48,6 @@ function CanOwnCanteenMenu() {
     fetchCanteenFoodItems();
   }, [canteenId]);
 
-  // Add Food Handlers
   const handleAddInputChange = (e) => {
     setAddForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -65,10 +62,7 @@ function CanOwnCanteenMenu() {
       const res = await fetch('/api/item/food', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...addForm,
-          canteenId // <-- use 'canteen' as per backend/controller
-        }),
+        body: JSON.stringify({ ...addForm, canteenId }),
       });
       const data = await res.json();
       if (data.success) {
@@ -83,13 +77,10 @@ function CanOwnCanteenMenu() {
     }
   };
 
-  // Delete Food
   const confirmDelete = async () => {
     if (!deleteTarget) return;
     try {
-      const res = await fetch(`/api/item/food/${deleteTarget._id}`, {
-        method: 'DELETE',
-      });
+      const res = await fetch(`/api/item/food/${deleteTarget._id}`, { method: 'DELETE' });
       const data = await res.json();
       alert(data.message);
       setAllFoodDetails(prev => prev.filter(item => item._id !== deleteTarget._id));
@@ -99,7 +90,6 @@ function CanOwnCanteenMenu() {
     setDeleteTarget(null);
   };
 
-  // Edit Food
   const handleEditInputChange = (e) => {
     setEditForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -141,10 +131,7 @@ function CanOwnCanteenMenu() {
       <h1 className="text-center can-own-food-items-heading mb-4">Canteen Items</h1>
 
       <div className="text-end mb-3">
-        <button
-          className="btn btn-success"
-          onClick={() => setShowAddModal(true)}
-        >
+        <button className="btn btn-success" onClick={() => setShowAddModal(true)}>
           + Add Food Item
         </button>
       </div>
@@ -155,11 +142,7 @@ function CanOwnCanteenMenu() {
         </div>
       ) : allFoodDetails.length === 0 ? (
         <div className="text-center">
-          <img
-            src="https://img.freepik.com/free-vector/choosing-healthy-unhealthy-food_23-2148552452.jpg"
-            alt="No items"
-            className="w-50 mb-3"
-          />
+          <img src="https://img.freepik.com/free-vector/choosing-healthy-unhealthy-food_23-2148552452.jpg" alt="No items" className="w-50 mb-3" />
           <h2 className="no-item-text">No food items added yet.</h2>
         </div>
       ) : (
@@ -175,6 +158,15 @@ function CanOwnCanteenMenu() {
                 />
                 <div className="card-body d-flex flex-column">
                   <h5 className="card-title">{eachFood.name}</h5>
+
+                  {/* ⭐ Rating Display */}
+                  <p className="text-warning mb-1">
+                    ⭐ {eachFood.avgRating?.toFixed(1) || '0.0'}{' '}
+                    <span className="text-muted small">
+                      ({eachFood.ratings?.length || 0} rating{eachFood.ratings?.length === 1 ? '' : 's'})
+                    </span>
+                  </p>
+
                   <p className="card-text text-muted mb-2">₹{eachFood.price}</p>
                   <p className="card-text small flex-grow-1">{eachFood.description}</p>
                   <div className="d-flex justify-content-between mt-2">
@@ -202,8 +194,8 @@ function CanOwnCanteenMenu() {
         </div>
       )}
 
-      {/* Add Food Modal */}
-      <div className={`modal fade${showAddModal ? ' show d-block' : ''}`} tabIndex="-1" style={showAddModal ? { background: 'rgba(0,0,0,0.5)' } : {}} >
+      {/* Add Modal */}
+      <div className={`modal fade ${showAddModal ? 'show d-block' : ''}`} tabIndex="-1" style={showAddModal ? { background: 'rgba(0,0,0,0.5)' } : {}}>
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header bg-success text-white">
@@ -214,50 +206,24 @@ function CanOwnCanteenMenu() {
               {addError && <div className="alert alert-danger">{addError}</div>}
               <div className="mb-2">
                 <label>Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  className="form-control"
-                  value={addForm.name}
-                  onChange={handleAddInputChange}
-                />
+                <input type="text" name="name" className="form-control" value={addForm.name} onChange={handleAddInputChange} />
               </div>
               <div className="mb-2">
                 <label>Price</label>
-                <input
-                  type="number"
-                  name="price"
-                  className="form-control"
-                  value={addForm.price}
-                  onChange={handleAddInputChange}
-                />
+                <input type="number" name="price" className="form-control" value={addForm.price} onChange={handleAddInputChange} />
               </div>
               <div className="mb-2">
                 <label>Image URL</label>
-                <input
-                  type="text"
-                  name="imageUrl"
-                  className="form-control"
-                  value={addForm.imageUrl}
-                  onChange={handleAddInputChange}
-                />
+                <input type="text" name="imageUrl" className="form-control" value={addForm.imageUrl} onChange={handleAddInputChange} />
               </div>
               <div className="mb-2">
                 <label>Description</label>
-                <textarea
-                  name="description"
-                  className="form-control"
-                  rows="3"
-                  value={addForm.description}
-                  onChange={handleAddInputChange}
-                ></textarea>
+                <textarea name="description" className="form-control" rows="3" value={addForm.description} onChange={handleAddInputChange}></textarea>
               </div>
             </div>
             <div className="modal-footer">
               <button className="btn btn-secondary" onClick={() => setShowAddModal(false)}>Cancel</button>
-              <button className="btn btn-success" onClick={handleAddFood}>
-                Add Food
-              </button>
+              <button className="btn btn-success" onClick={handleAddFood}>Add Food</button>
             </div>
           </div>
         </div>
@@ -293,50 +259,24 @@ function CanOwnCanteenMenu() {
             <div className="modal-body">
               <div className="mb-2">
                 <label>Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  className="form-control"
-                  value={editForm.name}
-                  onChange={handleEditInputChange}
-                />
+                <input type="text" name="name" className="form-control" value={editForm.name} onChange={handleEditInputChange} />
               </div>
               <div className="mb-2">
                 <label>Price</label>
-                <input
-                  type="number"
-                  name="price"
-                  className="form-control"
-                  value={editForm.price}
-                  onChange={handleEditInputChange}
-                />
+                <input type="number" name="price" className="form-control" value={editForm.price} onChange={handleEditInputChange} />
               </div>
               <div className="mb-2">
                 <label>Image URL</label>
-                <input
-                  type="text"
-                  name="imageUrl"
-                  className="form-control"
-                  value={editForm.imageUrl}
-                  onChange={handleEditInputChange}
-                />
+                <input type="text" name="imageUrl" className="form-control" value={editForm.imageUrl} onChange={handleEditInputChange} />
               </div>
               <div className="mb-2">
                 <label>Description</label>
-                <textarea
-                  name="description"
-                  className="form-control"
-                  rows="3"
-                  value={editForm.description}
-                  onChange={handleEditInputChange}
-                ></textarea>
+                <textarea name="description" className="form-control" rows="3" value={editForm.description} onChange={handleEditInputChange}></textarea>
               </div>
             </div>
             <div className="modal-footer">
               <button className="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-              <button className="btn btn-primary" data-bs-dismiss="modal" onClick={handleUpdateFood}>
-                Save Changes
-              </button>
+              <button className="btn btn-primary" data-bs-dismiss="modal" onClick={handleUpdateFood}>Save Changes</button>
             </div>
           </div>
         </div>

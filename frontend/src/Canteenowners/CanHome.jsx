@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import './Canteen.css';
-import './CanHome.css'
+import './CanHome.css';
 
 function CanHome() {
   const location = useLocation();
@@ -130,6 +130,13 @@ function CanHome() {
                 <div>
                   <h4 className='canteen-cards-heading text-primary'>{eachCanteen.name}</h4>
                   <p className="mb-2"><span className="fw-bold">Timings:</span> {eachCanteen.openingtime} to {eachCanteen.closingtime}</p>
+                  {/* ⭐ Canteen Rating Display */}
+                  {eachCanteen.avgRating !== undefined && (
+                    <p className="mb-2 text-warning">
+                      ⭐ {eachCanteen.avgRating?.toFixed(1) || '0.0'}
+                      <span className="text-muted small"> ({eachCanteen.ratings?.length || 0} rating{eachCanteen.ratings?.length === 1 ? '' : 's'})</span>
+                    </p>
+                  )}
                 </div>
                 <div className="mt-3 d-flex flex-wrap gap-2">
                   <button className='btn btn-outline-danger btn-sm' onClick={RemoveCanteen(eachCanteen)}>Remove</button>
