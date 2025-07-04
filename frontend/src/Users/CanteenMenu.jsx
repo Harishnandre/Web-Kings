@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useLocation, Link } from 'react-router-dom';
 import { useCart } from '../Context/CartContext';
+import { useRatings } from '../Context/RatingsContext';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Home.css';
@@ -9,11 +10,14 @@ function CanteenMenu() {
   const { canteenId } = useParams();
   const location = useLocation();
   const userId = location.state?.userId;
+
   const { addToCart, cart, fetchCart } = useCart();
+  const { rateFood } = useRatings();
 
   const [foodItemIds, setFoodItemIds] = useState([]);
   const [allFoodDetails, setFoodDetails] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [userRatings, setUserRatings] = useState({});
 
   useEffect(() => {
     const fetchFoodIds = async () => {
@@ -48,6 +52,15 @@ function CanteenMenu() {
     else setLoading(false);
   }, [foodItemIds]);
 
+  useEffect(() => {
+    const initialRatings = {};
+    allFoodDetails.forEach((food) => {
+      const userRating = food.ratings?.find((r) => r.user === userId);
+      if (userRating) initialRatings[food._id] = userRating.rating;
+    });
+    setUserRatings(initialRatings);
+  }, [allFoodDetails, userId]);
+
   const handleAddToCart = async (foodId, foodName) => {
     if (!userId) {
       toast.error('Please login to add items to cart.');
@@ -55,17 +68,48 @@ function CanteenMenu() {
     }
     await addToCart(userId, foodId, 1);
     toast.success(`Added "${foodName}" to cart!`);
-    await fetchCart(userId); // 
+    await fetchCart(userId);
   };
 
-  // Unique items count for cart badge
-    const cartCount = cart?.canteens?.reduce((sum, cg) => sum + cg.items.length, 0) || 0;
+  const handleRatingChange = async (foodId, newRating) => {
+    if (!userId) {
+      toast.error('Login required to rate.');
+      return;
+    }
 
+    const result = await rateFood(foodId, userId, newRating);
+    if (result) {
+      toast.success('Rating submitted!');
+
+      const updatedFoods = allFoodDetails.map((f) => {
+        if (f._id === foodId) {
+          const hasExisting = f.ratings?.some((r) => r.user === userId);
+          const updatedRatings = hasExisting
+            ? f.ratings.map((r) =>
+                r.user === userId ? { ...r, rating: newRating } : r
+              )
+            : [...(f.ratings || []), { user: userId, rating: newRating }];
+
+          return {
+            ...f,
+            avgRating: result.avgRating,
+            ratings: updatedRatings,
+          };
+        }
+        return f;
+      });
+
+      setFoodDetails(updatedFoods);
+      setUserRatings((prev) => ({ ...prev, [foodId]: newRating }));
+    }
+  };
+
+  const cartCount = cart?.canteens?.reduce((sum, cg) => sum + cg.items.length, 0) || 0;
 
   return (
     <div className="container mt-4">
       <ToastContainer position="top-center" autoClose={1500} />
-      {/* Cart summary bar */}
+      {/* Cart summary */}
       <div className="d-flex justify-content-end align-items-center mb-3">
         <Link
           to="/usercart"
@@ -80,6 +124,7 @@ function CanteenMenu() {
           )}
         </Link>
       </div>
+
       <h1 className="canteen-menu-heading text-center mb-4">Food Items</h1>
       {loading ? (
         <div className="d-flex justify-content-center my-5">
@@ -110,6 +155,38 @@ function CanteenMenu() {
                   />
                   <div className="card-body d-flex flex-column">
                     <h5 className="card-title">{food.name}</h5>
+
+                    {/* ⭐ Rating Display */}
+                    <p className="text-warning mb-1">
+                      ⭐ {food.avgRating?.toFixed(1) || '0.0'}{' '}
+                      <span className="text-muted small">
+                        ({food.ratings?.length || 0} rating{food.ratings?.length === 1 ? '' : 's'})
+                      </span>
+                    </p>
+
+                    {/* ⭐ Star-based Rating Input */}
+                    <div className="mb-2">
+                      <label className="form-label small mb-1">Your Rating:</label>
+                      <div>
+                        {[1, 2, 3, 4, 5].map((r) => (
+                          <span
+                            key={r}
+                            role="button"
+                            className="star-button"
+                            style={{
+                              color: r <= (userRatings[food._id] || 0) ? '#ffc107' : '#e4e5e9',
+                              fontSize: '1.3rem',
+                              marginRight: '4px',
+                              cursor: 'pointer'
+                            }}
+                            onClick={() => handleRatingChange(food._id, r)}
+                          >
+                            ★
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
                     <p className="card-text text-muted mb-2">₹{food.price}</p>
                     <p className="card-text small flex-grow-1">{food.description}</p>
                     <button

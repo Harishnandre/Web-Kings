@@ -14,10 +14,11 @@ import CanteenMenu from './Users/CanteenMenu';
 import CanOwnCanteenMenu from './Canteenowners/CanOwnCanteenMenu';
 import Cart from './Cart/Cart';
 import { CartProvider } from './Context/CartContext';// <-- Import CartProvider
+import { RatingsProvider } from './Context/RatingsContext'; // <-- Import RatingsProvider
 
 function App() {
   return (
-    <CartProvider>
+    <CartProvider> <RatingsProvider>
       <div className="App">
         <Router>
           <Routes>
@@ -34,6 +35,7 @@ function App() {
           </Routes>
         </Router>
       </div>
+      </RatingsProvider>
     </CartProvider>
   );
 }

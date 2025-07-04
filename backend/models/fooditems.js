@@ -7,10 +7,30 @@ const foodSchema = new Schema({
   price: { type: Number, required: true },
   imageUrl: { type: String, required: true },
   description: { type: String },
-  canteen: { type: Schema.Types.ObjectId, ref: 'Canteen', required: true }
+  canteen: { type: Schema.Types.ObjectId, ref: 'Canteen', required: true },
+
+  // ⭐ Ratings Feature
+  ratings: [
+    {
+      user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+      rating: { type: Number, required: true, min: 1, max: 5 }
+    }
+  ],
+  avgRating: { type: Number, default: 0 }
 });
 
-// Middleware: When a food is deleted
+// 📌 Method to calculate average rating
+foodSchema.methods.calculateAvgRating = function () {
+  if (this.ratings.length === 0) {
+    this.avgRating = 0;
+  } else {
+    const total = this.ratings.reduce((acc, r) => acc + r.rating, 0);
+    this.avgRating = total / this.ratings.length;
+  }
+  return this.save();
+};
+
+// ♻️ Middleware: Cleanup after deleting food
 foodSchema.post('findOneAndDelete', async function (doc) {
   if (!doc) return;
 
@@ -18,7 +38,7 @@ foodSchema.post('findOneAndDelete', async function (doc) {
   console.log(`Cleaning up food ${foodId} from all carts...`);
 
   try {
-    // Step 1: Remove the food item from all carts
+    // Remove food from carts
     await Cart.updateMany(
       {},
       {
@@ -26,18 +46,16 @@ foodSchema.post('findOneAndDelete', async function (doc) {
       }
     );
 
-    // Step 2: Fetch all carts to re-check their state
+    // Clean up empty carts
     const carts = await Cart.find();
 
     for (const cart of carts) {
       let updatedCanteens = cart.canteens.filter(cg => cg.items.length > 0);
 
-      // Step 3: If no canteen has any items, delete entire cart
       if (updatedCanteens.length === 0) {
         await Cart.findByIdAndDelete(cart._id);
         console.log(`Deleted entire cart for user ${cart.user} as it became empty.`);
       } else {
-        // Else, update the cart with filtered canteens
         cart.canteens = updatedCanteens;
         await cart.save();
         console.log(`Updated cart for user ${cart.user}, removed empty canteens.`);

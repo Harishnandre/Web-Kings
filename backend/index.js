@@ -15,11 +15,13 @@ const fooditemsroutes = require('./routes/fooditemsroutes');
 const canownerroutes = require('./routes/Canownerroutes');
 const canteenroutes = require('./routes/canteenroutes');
 const cartroutes = require('./routes/cartRoutes');
+const ratingsroutes = require('./routes/ratingsroutes');
 
 app.use('/api/can', canteenroutes);
 app.use('/api/users', userroutes);
 app.use('/api/item', fooditemsroutes);
 app.use('/api/canowner', canownerroutes);
+app.use('/api/ratings', ratingsroutes);
 app.use('/api/cart', cartroutes);
 
 mongoose

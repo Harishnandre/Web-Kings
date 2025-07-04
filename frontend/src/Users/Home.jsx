@@ -7,7 +7,8 @@ import Navbar from 'react-bootstrap/Navbar';
 import Offcanvas from 'react-bootstrap/Offcanvas';
 import Footer from '../LoaderPage/Footer';
 import './Home.css';
-import { useCart } from '../Context/CartContext'; // Import CartContext
+import { useCart } from '../Context/CartContext';
+import { useRatings } from '../Context/RatingsContext'; // ✅ Added
 
 function Home() {
   const expand = 'md';
@@ -15,11 +16,11 @@ function Home() {
   const userdetails = location.state.userdetails;
   const [canteens, setCanteen] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [userRatings, setUserRatings] = useState({}); // ✅ New state
 
-  // Cart context
   const { cart, fetchCart } = useCart();
+  const { rateCanteen } = useRatings(); // ✅ Use context method
 
-  // Fetch cart on mount if userdetails exists
   useEffect(() => {
     if (userdetails?._id) {
       fetchCart(userdetails._id);
@@ -31,18 +32,48 @@ function Home() {
       try {
         const res = await fetch('/api/can/canteen');
         const data = await res.json();
-        setCanteen(data.canteens);
+        setCanteen(data.canteens || []);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching canteens:', error);
         setLoading(false);
       }
     };
-
     showCanteens();
   }, []);
 
-  // Unique items count for cart badge
+  // Load user's existing ratings
+  useEffect(() => {
+    const initialRatings = {};
+    canteens.forEach((c) => {
+      const userRating = c.ratings?.find((r) => r.user === userdetails._id);
+      if (userRating) initialRatings[c._id] = userRating.rating;
+    });
+    setUserRatings(initialRatings);
+  }, [canteens, userdetails]);
+
+  const handleCanteenRating = async (canteenId, rating) => {
+    const result = await rateCanteen(canteenId, userdetails._id, rating);
+    if (result) {
+      const updatedCanteens = canteens.map((c) => {
+        if (c._id === canteenId) {
+          const hasExisting = c.ratings?.some((r) => r.user === userdetails._id);
+          const updatedRatings = hasExisting
+            ? c.ratings.map((r) => (r.user === userdetails._id ? { ...r, rating } : r))
+            : [...(c.ratings || []), { user: userdetails._id, rating }];
+          return {
+            ...c,
+            avgRating: result.avgRating,
+            ratings: updatedRatings,
+          };
+        }
+        return c;
+      });
+      setCanteen(updatedCanteens);
+      setUserRatings((prev) => ({ ...prev, [canteenId]: rating }));
+    }
+  };
+
   const cartCount = cart?.canteens?.reduce((sum, cg) => sum + cg.items.length, 0) || 0;
 
   return (
@@ -91,7 +122,6 @@ function Home() {
             </div>
           ) : canteens.length === 0 ? (
             <div className="d-flex flex-column align-items-center justify-content-center my-5">
-  
               <h2 className="text-danger mb-2">No Canteens Available</h2>
               <p className="text-muted">Please check back later. We’ll have delicious options soon!</p>
             </div>
@@ -104,7 +134,38 @@ function Home() {
                       <div>
                         <h5 className="card-title text-danger">{canteen.name}</h5>
                         <p className="card-text text-muted">Timings: {canteen.openingtime} - {canteen.closingtime}</p>
+                        
+                        {/* ⭐ Avg Rating */}
+                        <p className="text-warning mb-1">
+                          ⭐ {canteen.avgRating?.toFixed(1) || '0.0'}{' '}
+                          <span className="text-muted small">
+                            ({canteen.ratings?.length || 0} rating{canteen.ratings?.length === 1 ? '' : 's'})
+                          </span>
+                        </p>
+
+                        {/* ⭐ User Rating Input */}
+                        <div>
+                          <label className="form-label small mb-1">Your Rating:</label>
+                          <div>
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <span
+                                key={star}
+                                role="button"
+                                style={{
+                                  color: star <= (userRatings[canteen._id] || 0) ? '#ffc107' : '#e4e5e9',
+                                  fontSize: '1.3rem',
+                                  marginRight: '4px',
+                                  cursor: 'pointer'
+                                }}
+                                onClick={() => handleCanteenRating(canteen._id, star)}
+                              >
+                                ★
+                              </span>
+                            ))}
+                          </div>
+                        </div>
                       </div>
+
                       <Link
                         to={`/usercanteenmenu/${canteen._id}`}
                         state={{ userId: userdetails._id }}
