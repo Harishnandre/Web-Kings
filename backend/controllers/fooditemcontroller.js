@@ -11,34 +11,31 @@ exports.createFood = async (req, res) => {
       return res.status(422).json({ message: "Invalid input", success: false });
     }
 
-    const { name, price, imageUrl, description, creator } = req.body;
-
+    const { name, price, imageUrl, description, canteenId } = req.body;
+    // Find the canteen first
+    const canteen = await Canteen.findById(canteenId);
+    if (!canteen) {
+      return res.status(422).json({
+        message: "Failed, no such canteen.",
+        success: false
+      });
+    }
+   
+    // Create the food item with canteen reference
     const createdFood = new Food({
       name,
       price,
       imageUrl,
       description,
-      creator
+      canteen: canteenId
     });
 
     // Save the new food first
     await createdFood.save();
 
-    // Update corresponding canteen
-    const canteen = await Canteen.findOneAndUpdate(
-      { name: req.params.name, creator },
-      { $push: { food: createdFood._id } },
-      { new: true }
-    );
-
-    if (!canteen) {
-      // rollback food creation if canteen not found
-      await Food.findByIdAndDelete(createdFood._id);
-      return res.status(422).json({
-        message: "Failed, no such canteen for the creator.",
-        success: false
-      });
-    }
+    // Update corresponding canteen's food array
+    canteen.food.push(createdFood._id);
+    await canteen.save();
 
     res.status(201).json({
       food: createdFood.toObject({ getters: true }),

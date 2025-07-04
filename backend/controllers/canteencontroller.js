@@ -103,9 +103,6 @@ exports.deleteCanteen = async (req, res) => {
       return res.status(404).json({ message: 'Canteen not found' });
     }
 
-    // Delete all related food items
-    await Food.deleteMany({ _id: { $in: canteen.food } });
-
     // Delete the canteen
     await Canteen.findByIdAndDelete(req.params.id);
 

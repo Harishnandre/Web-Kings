@@ -8,13 +8,25 @@ function CanOwnCanteenMenu() {
   const [loading, setLoading] = useState(true);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [editTarget, setEditTarget] = useState(null);
-  const [editForm, setEditForm] = useState({ name: '', price: '', description: '' });
+  const [editForm, setEditForm] = useState({ name: '', price: '', description: '', imageUrl: '' });
+
+  // Add Food Modal State
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [addForm, setAddForm] = useState({ name: '', price: '', description: '', imageUrl: '' });
+  const [addError, setAddError] = useState('');
 
   useEffect(() => {
     const fetchCanteenFoodItems = async () => {
+      setLoading(true);
       try {
         const res = await fetch(`/api/can/canteenbyid/${canteenId}`);
         const data = await res.json();
+
+        if (!data.canteen || !Array.isArray(data.canteen.food)) {
+          setAllFoodDetails([]);
+          setLoading(false);
+          return;
+        }
 
         const foodIds = data.canteen.food;
         const foodDetails = [];
@@ -28,19 +40,52 @@ function CanOwnCanteenMenu() {
         }
 
         setAllFoodDetails(foodDetails);
-        setLoading(false);
       } catch (error) {
         console.error('Error fetching food items:', error);
-        setLoading(false);
+        setAllFoodDetails([]);
       }
+      setLoading(false);
     };
 
     fetchCanteenFoodItems();
   }, [canteenId]);
 
+  // Add Food Handlers
+  const handleAddInputChange = (e) => {
+    setAddForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleAddFood = async () => {
+    setAddError('');
+    if (!addForm.name || !addForm.price || !addForm.imageUrl) {
+      setAddError('Name, Price, and Image URL are required.');
+      return;
+    }
+    try {
+      const res = await fetch('/api/item/food', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...addForm,
+          canteenId // <-- use 'canteen' as per backend/controller
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAllFoodDetails(prev => [...prev, data.food]);
+        setShowAddModal(false);
+        setAddForm({ name: '', price: '', description: '', imageUrl: '' });
+      } else {
+        setAddError(data.message || 'Failed to add food item.');
+      }
+    } catch (err) {
+      setAddError('Server error while adding food item.');
+    }
+  };
+
+  // Delete Food
   const confirmDelete = async () => {
     if (!deleteTarget) return;
-
     try {
       const res = await fetch(`/api/item/food/${deleteTarget._id}`, {
         method: 'DELETE',
@@ -51,10 +96,10 @@ function CanOwnCanteenMenu() {
     } catch (error) {
       alert('Failed to delete item.');
     }
-
     setDeleteTarget(null);
   };
 
+  // Edit Food
   const handleEditInputChange = (e) => {
     setEditForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -65,6 +110,7 @@ function CanOwnCanteenMenu() {
       name: food.name,
       price: food.price,
       description: food.description || '',
+      imageUrl: food.imageUrl || ''
     });
   };
 
@@ -82,7 +128,7 @@ function CanOwnCanteenMenu() {
           prev.map(food => (food._id === editTarget._id ? data.food : food))
         );
       } else {
-        alert('Failed to update food');
+        alert(data.message || 'Failed to update food');
       }
     } catch (err) {
       alert('Server error while updating food');
@@ -93,6 +139,15 @@ function CanOwnCanteenMenu() {
   return (
     <div className="container mt-4">
       <h1 className="text-center can-own-food-items-heading mb-4">Canteen Items</h1>
+
+      <div className="text-end mb-3">
+        <button
+          className="btn btn-success"
+          onClick={() => setShowAddModal(true)}
+        >
+          + Add Food Item
+        </button>
+      </div>
 
       {loading ? (
         <div className="text-center">
@@ -147,6 +202,67 @@ function CanOwnCanteenMenu() {
         </div>
       )}
 
+      {/* Add Food Modal */}
+      <div className={`modal fade${showAddModal ? ' show d-block' : ''}`} tabIndex="-1" style={showAddModal ? { background: 'rgba(0,0,0,0.5)' } : {}} >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header bg-success text-white">
+              <h5 className="modal-title">Add Food Item</h5>
+              <button type="button" className="btn-close" onClick={() => setShowAddModal(false)}></button>
+            </div>
+            <div className="modal-body">
+              {addError && <div className="alert alert-danger">{addError}</div>}
+              <div className="mb-2">
+                <label>Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  className="form-control"
+                  value={addForm.name}
+                  onChange={handleAddInputChange}
+                />
+              </div>
+              <div className="mb-2">
+                <label>Price</label>
+                <input
+                  type="number"
+                  name="price"
+                  className="form-control"
+                  value={addForm.price}
+                  onChange={handleAddInputChange}
+                />
+              </div>
+              <div className="mb-2">
+                <label>Image URL</label>
+                <input
+                  type="text"
+                  name="imageUrl"
+                  className="form-control"
+                  value={addForm.imageUrl}
+                  onChange={handleAddInputChange}
+                />
+              </div>
+              <div className="mb-2">
+                <label>Description</label>
+                <textarea
+                  name="description"
+                  className="form-control"
+                  rows="3"
+                  value={addForm.description}
+                  onChange={handleAddInputChange}
+                ></textarea>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn btn-secondary" onClick={() => setShowAddModal(false)}>Cancel</button>
+              <button className="btn btn-success" onClick={handleAddFood}>
+                Add Food
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Delete Modal */}
       <div className="modal fade" id="deleteConfirmModal" tabIndex="-1">
         <div className="modal-dialog modal-dialog-centered">
@@ -192,6 +308,16 @@ function CanOwnCanteenMenu() {
                   name="price"
                   className="form-control"
                   value={editForm.price}
+                  onChange={handleEditInputChange}
+                />
+              </div>
+              <div className="mb-2">
+                <label>Image URL</label>
+                <input
+                  type="text"
+                  name="imageUrl"
+                  className="form-control"
+                  value={editForm.imageUrl}
                   onChange={handleEditInputChange}
                 />
               </div>

@@ -9,7 +9,7 @@ function CanteenMenu() {
   const { canteenId } = useParams();
   const location = useLocation();
   const userId = location.state?.userId;
-  const { addToCart, cart } = useCart();
+  const { addToCart, cart, fetchCart } = useCart();
 
   const [foodItemIds, setFoodItemIds] = useState([]);
   const [allFoodDetails, setFoodDetails] = useState([]);
@@ -55,10 +55,12 @@ function CanteenMenu() {
     }
     await addToCart(userId, foodId, 1);
     toast.success(`Added "${foodName}" to cart!`);
+    await fetchCart(userId); // 
   };
 
   // Unique items count for cart badge
-  const cartCount = cart.length;
+    const cartCount = cart?.canteens?.reduce((sum, cg) => sum + cg.items.length, 0) || 0;
+
 
   return (
     <div className="container mt-4">

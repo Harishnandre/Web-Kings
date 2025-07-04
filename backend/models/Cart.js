@@ -6,9 +6,14 @@ const cartItemSchema = new Schema({
   quantity: { type: Number, default: 1, min: 1 }
 });
 
+const canteenCartSchema = new Schema({
+  canteen: { type: Schema.Types.ObjectId, ref: 'Canteen', required: true },
+  items: [cartItemSchema]
+});
+
 const cartSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
-  items: [cartItemSchema]
+  canteens: [canteenCartSchema]
 });
 
 module.exports = mongoose.model('Cart', cartSchema);

@@ -43,7 +43,7 @@ function Home() {
   }, []);
 
   // Unique items count for cart badge
-  const cartCount = cart.length;
+  const cartCount = cart?.canteens?.reduce((sum, cg) => sum + cg.items.length, 0) || 0;
 
   return (
     <>

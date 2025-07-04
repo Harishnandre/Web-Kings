@@ -3,7 +3,7 @@ const { createFood, getAllFood, getFoodById, updateFood, deleteFood } = require(
 
 const router = express.Router();
 // Food routes
-router.post('/food/:name', createFood);
+router.post('/food', createFood);
 router.get('/food', getAllFood);
 router.get('/food/:id', getFoodById);
 router.put('/food/:id', updateFood);

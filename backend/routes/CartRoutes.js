@@ -6,5 +6,6 @@ router.post('/add', cartController.addToCart);
 router.get('/:userId', cartController.getCart);
 router.post('/remove', cartController.removeFromCart);
 router.post('/update', cartController.updateCartItem);
+router.post('/clear', cartController.clearCanteenFromCart );
 
 module.exports = router;

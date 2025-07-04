@@ -1,66 +1,144 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useCart } from '../Context/CartContext';
+import './Cart.css';
 
 function Cart() {
   const location = useLocation();
   const userId = location.state?.userId;
-  const { cart, fetchCart, removeFromCart, editCartItem, totalCost } = useCart();
 
+  const {
+    cart: contextCart,
+    fetchCart,
+    editCartItem,
+    removeFromCart,
+    clearCanteenCart,
+    totalCost
+  } = useCart();
+
+  const [cart, setCart] = useState(null);
+  const [hasFetched, setHasFetched] = useState(false);
+
+  // Fetch cart once on mount
   useEffect(() => {
-    if (userId) fetchCart(userId);
-  }, [userId, fetchCart]);
+    if (userId && !hasFetched) {
+      fetchCart(userId).then(() => setHasFetched(true));
+    }
+  }, [userId, hasFetched, fetchCart]);
 
-  const handleQuantityChange = (foodId, newQty) => {
+  // Sync contextCart to local cart state when it changes
+  useEffect(() => {
+    setCart(contextCart);
+  }, [contextCart]);
+
+  const handleQuantityChange = async (foodId, newQty) => {
     if (newQty < 1) return;
-    editCartItem(userId, foodId, newQty);
+    await editCartItem(userId, foodId, newQty);
+    await fetchCart(userId); // update contextCart to reflect badge and global state
+  };
+
+  const handleRemoveFromCart = async (foodId) => {
+    await removeFromCart(userId, foodId);
+    await fetchCart(userId);
+
+    setCart(prev => {
+      const updatedCanteens = prev.canteens
+        .map(cg => {
+          const newItems = cg.items.filter(item => item.food && item.food._id !== foodId);
+          return { ...cg, items: newItems };
+        })
+        .filter(cg => cg.items.length > 0);
+      return { ...prev, canteens: updatedCanteens };
+    });
+  };
+
+  const handleClearCanteen = async (canteenId) => {
+    await clearCanteenCart(userId, canteenId);
+    await fetchCart(userId);
+
+    setCart(prev => {
+      const updatedCanteens = prev.canteens.filter(cg => cg.canteen._id !== canteenId);
+      return { ...prev, canteens: updatedCanteens };
+    });
+  };
+
+  const handlePlaceOrder = (canteenName) => {
+    alert(`Order placed for ${canteenName}!`);
   };
 
   return (
-    <div className="container mt-5 pt-5">
-      <h2 className="mb-4">🛒 My Cart</h2>
-      {cart.length === 0 ? (
-        <div className="alert alert-info">Your cart is empty.</div>
+    <div className="cart-container">
+      <h2 className="cart-title">🛒 My Cart</h2>
+      {!cart?.canteens || cart.canteens.length === 0 ? (
+        <div className="cart-alert">Your cart is empty.</div>
       ) : (
-        <div className="card shadow">
-          <ul className="list-group list-group-flush">
-            {cart.map(item => (
-              <li key={item.food._id} className="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                  <strong>{item.food.name}</strong>
-                  <div className="text-muted small">₹{item.food.price} each</div>
-                </div>
-                <div className="d-flex align-items-center">
+        <div>
+          {cart.canteens.map(cg => (
+            <div key={cg.canteen._id} className="cart-card">
+              <div className="cart-card-header">
+                <strong>{cg.canteen.name}</strong>
+              </div>
+              <ul className="cart-list">
+                {cg.items.map(item => {
+                  if (!item.food) return null;
+
+                  return (
+                    <li key={item.food._id} className="cart-item">
+                      <div className="cart-item-details">
+                        <strong>{item.food.name}</strong>
+                        <div className="cart-item-price">₹{item.food.price} each</div>
+                      </div>
+                      <div className="cart-actions">
+                        <button
+                          className="cart-btn cart-btn-qty"
+                          onClick={() => handleQuantityChange(item.food._id, item.quantity - 1)}
+                        >-</button>
+                        <input
+                          type="number"
+                          min="1"
+                          value={item.quantity}
+                          onChange={e => handleQuantityChange(item.food._id, Number(e.target.value))}
+                          className="cart-qty-input"
+                        />
+                        <button
+                          className="cart-btn cart-btn-qty"
+                          onClick={() => handleQuantityChange(item.food._id, item.quantity + 1)}
+                        >+</button>
+                        <button
+                          className="cart-btn cart-btn-remove"
+                          onClick={() => handleRemoveFromCart(item.food._id)}
+                        >Remove</button>
+                      </div>
+                      <div className="cart-item-total">
+                        ₹{item.food.price * item.quantity}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+              <div className="cart-card-footer">
+                <span>
+                  Subtotal: ₹{cg.items.reduce((s, item) => {
+                    if (!item.food || typeof item.food.price !== 'number') return s;
+                    return s + item.food.price * item.quantity;
+                  }, 0)}
+                </span>
+                <div className="cart-footer-actions">
                   <button
-                    className="btn btn-outline-secondary btn-sm me-2"
-                    onClick={() => handleQuantityChange(item.food._id, item.quantity - 1)}
-                  >-</button>
-                  <input
-                    type="number"
-                    min="1"
-                    value={item.quantity}
-                    onChange={e => handleQuantityChange(item.food._id, Number(e.target.value))}
-                    className="form-control form-control-sm text-center"
-                    style={{ width: 50 }}
-                  />
+                    className="cart-btn cart-btn-clear"
+                    onClick={() => handleClearCanteen(cg.canteen._id)}
+                  >Clear Cart</button>
                   <button
-                    className="btn btn-outline-secondary btn-sm ms-2"
-                    onClick={() => handleQuantityChange(item.food._id, item.quantity + 1)}
-                  >+</button>
-                  <button
-                    className="btn btn-danger btn-sm ms-3"
-                    onClick={() => removeFromCart(userId, item.food._id)}
-                  >Remove</button>
+                    className="cart-btn cart-btn-order"
+                    onClick={() => handlePlaceOrder(cg.canteen.name)}
+                  >Order</button>
                 </div>
-                <div className="ms-3 fw-bold">
-                  ₹{item.food.price * item.quantity}
-                </div>
-              </li>
-            ))}
-          </ul>
-          <div className="card-footer d-flex justify-content-between align-items-center">
-            <span className="fw-bold fs-5">Total: ₹{totalCost}</span>
-            <button className="btn btn-success" disabled={cart.length === 0}>
+              </div>
+            </div>
+          ))}
+          <div className="cart-card-footer">
+            <span className="fs-5">Total: ₹{totalCost}</span>
+            <button className="cart-btn cart-btn-checkout" disabled={totalCost === 0}>
               Proceed to Checkout
             </button>
           </div>

@@ -1,0 +1,113 @@
+/* Main Heading */
+.canteen-home-heading {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  color: #d7263d;
+  letter-spacing: 1px;
+}
+
+/* Add Canteen Card */
+.add-canteen-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(215, 38, 61, 0.10);
+  transition: box-shadow 0.2s;
+  border: 2px solid #ffe3e3;
+}
+.add-canteen-card:focus-within,
+.add-canteen-card:hover {
+  box-shadow: 0 8px 32px rgba(215, 38, 61, 0.18);
+  border-color: #d7263d;
+}
+.add-canteen-card h3 {
+  color: #d7263d;
+  font-weight: 600;
+}
+
+/* Canteen Cards */
+.canteen-cards {
+  background: linear-gradient(135deg, #fff0f3 0%, #f8f9fa 100%);
+  border: 1.5px solid #ffe3e3;
+  border-radius: 18px;
+  transition: box-shadow 0.2s, border 0.2s;
+}
+.canteen-cards:hover {
+  box-shadow: 0 6px 24px rgba(215, 38, 61, 0.13);
+  border: 2px solid #d7263d;
+}
+.canteen-cards-heading {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #d7263d;
+  margin-bottom: 0.5rem;
+}
+
+/* Buttons */
+.btn-outline-danger, .btn-outline-primary, .btn-outline-success {
+  border-radius: 20px;
+  font-weight: 500;
+  padding: 0.3rem 1.2rem;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+.btn-outline-danger {
+  border-color: #d7263d;
+  color: #d7263d;
+}
+.btn-outline-danger:hover {
+  background: #d7263d;
+  color: #fff;
+}
+.btn-outline-primary {
+  border-color: #1e90ff;
+  color: #1e90ff;
+}
+.btn-outline-primary:hover {
+  background: #1e90ff;
+  color: #fff;
+}
+.btn-outline-success {
+  border-color: #28a745;
+  color: #28a745;
+}
+.btn-outline-success:hover {
+  background: #28a745;
+  color: #fff;
+}
+
+/* Modal */
+.modal-content {
+  border-radius: 18px;
+}
+.modal-header.bg-primary {
+  background: #d7263d !important;
+  color: #fff !important;
+}
+.btn-close {
+  filter: invert(0.5);
+}
+
+/* Form Labels */
+.form-label {
+  color: #d7263d;
+  font-weight: 500;
+}
+
+/* Empty State */
+.text-danger {
+  color: #d7263d !important;
+}
+.text-primary {
+  color: #d7263d !important;
+}
+
+/* Responsive tweaks */
+@media (max-width: 767px) {
+  .add-canteen-card, .canteen-cards {
+    padding: 1rem !important;
+  }
+  .canteen-cards-heading {
+    font-size: 1.1rem;
+  }
+}.row.g-4 {
+  margin-bottom: 2.5rem;
+}
