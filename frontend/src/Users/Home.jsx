@@ -95,14 +95,17 @@ function Home() {
               </Offcanvas.Header>
               <Offcanvas.Body>
                 <Nav className="ms-auto">
-                  <Nav.Link as={Link} to="#">Home</Nav.Link>
+                  <Nav.Link as={Link} to="/userHome"  state={{ userdetails}}>Home</Nav.Link>
                   <Nav.Link as={Link} to="/usercart" state={{ userId: userdetails._id }}>
                     My Cart
                     {cartCount > 0 && (
                       <span className="badge bg-danger ms-2">{cartCount}</span>
                     )}
                   </Nav.Link>
-                  <Nav.Link as={Link} to="#">Contact Us</Nav.Link>
+                  <Nav.Link as={Link} to="/userorders" state={{ userId: userdetails._id }}>
+                    My Orders
+                  </Nav.Link>
+                  {/* <Nav.Link as={Link} to="#">Contact Us</Nav.Link> */}
                   <Nav.Link disabled>{userdetails.name}</Nav.Link>
                   <Link to="/" className="btn btn-outline-danger ms-3">Logout</Link>
                 </Nav>

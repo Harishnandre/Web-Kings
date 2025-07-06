@@ -15,10 +15,14 @@ import CanOwnCanteenMenu from './Canteenowners/CanOwnCanteenMenu';
 import Cart from './Cart/Cart';
 import { CartProvider } from './Context/CartContext';// <-- Import CartProvider
 import { RatingsProvider } from './Context/RatingsContext'; // <-- Import RatingsProvider
+import { OrderProvider } from './Context/OrderContext'; // <-- Import OrderProvider
+import Order from './Order/userOrders'
+import CanOrders from './Order/canteenOrders'; 
 
 function App() {
   return (
     <CartProvider> <RatingsProvider>
+       <OrderProvider>
       <div className="App">
         <Router>
           <Routes>
@@ -32,9 +36,12 @@ function App() {
             <Route path='/usercanteenmenu/:canteenId' element={<CanteenMenu />} />
             <Route path='/canteenownmenu/:canteenId' element={<CanOwnCanteenMenu />} />
             <Route path='/usercart' element={<Cart />} />
+            <Route path='/userorders' element={<Order />} />
+            <Route path='/canteenorders/:canteenId' element={<CanOrders />} />
           </Routes>
         </Router>
       </div>
+      </OrderProvider>
       </RatingsProvider>
     </CartProvider>
   );

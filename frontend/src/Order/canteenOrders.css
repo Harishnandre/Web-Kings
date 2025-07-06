@@ -1,0 +1,92 @@
+.orders-container {
+  padding: 1rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.orders-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.order-card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: #fff;
+}
+
+.order-header,
+.order-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.order-items {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.3rem;
+}
+
+.order-status {
+  padding: 0.2rem 0.5rem;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+}
+
+.order-status.placed { background-color: gray; }
+.order-status.accepted { background-color: orange; }
+.order-status.preparing { background-color: gold; }
+.order-status.ready { background-color: green; }
+.order-status.completed { background-color: blue; }
+.order-status.cancelled { background-color: red; }
+
+.order-time {
+  font-size: 0.9rem;
+  color: #555;
+}
+.order-status-control {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.order-status-control select {
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+.filter-container {
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-container select {
+  padding: 6px 12px;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+.status-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 6px;
+}
+
+.status-btn:hover {
+  background-color: #0056b3;
+}

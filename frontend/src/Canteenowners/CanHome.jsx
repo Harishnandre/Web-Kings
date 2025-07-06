@@ -142,6 +142,7 @@ function CanHome() {
                   <button className='btn btn-outline-danger btn-sm' onClick={RemoveCanteen(eachCanteen)}>Remove</button>
                   <button className='btn btn-outline-primary btn-sm' onClick={openUpdateModal(eachCanteen)}>Update</button>
                   <Link to={`/canteenownmenu/${eachCanteen._id}`} className='btn btn-outline-success btn-sm'>Show Menu</Link>
+                  <Link to={`/canteenorders/${eachCanteen._id}`} className='btn btn-outline-info btn-sm'>View Orders</Link>
                 </div>
               </div>
             </div>

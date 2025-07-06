@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useCart } from '../Context/CartContext';
+import { useOrders } from '../Context/OrderContext'; // ✅ Import OrderContext
 import './Cart.css';
-
+import { Link } from 'react-router-dom';
+import Nav from 'react-bootstrap/Nav'; // ✅ Import Nav for navigation
 function Cart() {
   const location = useLocation();
   const userId = location.state?.userId;
@@ -16,17 +18,21 @@ function Cart() {
     totalCost
   } = useCart();
 
+  const {
+    placeOrder,
+    loading: orderLoading,
+    error: orderError,
+  } = useOrders(); // ✅ Destructure placeOrder
+
   const [cart, setCart] = useState(null);
   const [hasFetched, setHasFetched] = useState(false);
 
-  // Fetch cart once on mount
   useEffect(() => {
     if (userId && !hasFetched) {
       fetchCart(userId).then(() => setHasFetched(true));
     }
   }, [userId, hasFetched, fetchCart]);
 
-  // Sync contextCart to local cart state when it changes
   useEffect(() => {
     setCart(contextCart);
   }, [contextCart]);
@@ -34,13 +40,12 @@ function Cart() {
   const handleQuantityChange = async (foodId, newQty) => {
     if (newQty < 1) return;
     await editCartItem(userId, foodId, newQty);
-    await fetchCart(userId); // update contextCart to reflect badge and global state
+    await fetchCart(userId);
   };
 
   const handleRemoveFromCart = async (foodId) => {
     await removeFromCart(userId, foodId);
     await fetchCart(userId);
-
     setCart(prev => {
       const updatedCanteens = prev.canteens
         .map(cg => {
@@ -55,15 +60,25 @@ function Cart() {
   const handleClearCanteen = async (canteenId) => {
     await clearCanteenCart(userId, canteenId);
     await fetchCart(userId);
-
     setCart(prev => {
       const updatedCanteens = prev.canteens.filter(cg => cg.canteen._id !== canteenId);
       return { ...prev, canteens: updatedCanteens };
     });
   };
 
-  const handlePlaceOrder = (canteenName) => {
-    alert(`Order placed for ${canteenName}!`);
+  const handlePlaceOrder = async (canteenId, canteenName, items) => {
+    const formattedItems = items.map(item => ({
+      food: item.food._id,
+      quantity: item.quantity,
+    }));
+
+    const result = await placeOrder({ canteenId, userId, items: formattedItems });
+
+    if (result) {
+      alert(`✅ Order placed for ${canteenName}!`);
+    } else {
+      alert(`❌ Failed to place order for ${canteenName}.`);
+    }
   };
 
   return (
@@ -81,7 +96,6 @@ function Cart() {
               <ul className="cart-list">
                 {cg.items.map(item => {
                   if (!item.food) return null;
-
                   return (
                     <li key={item.food._id} className="cart-item">
                       <div className="cart-item-details">
@@ -130,20 +144,23 @@ function Cart() {
                   >Clear Cart</button>
                   <button
                     className="cart-btn cart-btn-order"
-                    onClick={() => handlePlaceOrder(cg.canteen.name)}
-                  >Order</button>
+                    onClick={() => handlePlaceOrder(cg.canteen._id, cg.canteen.name, cg.items)}
+                  >
+                    {orderLoading ? 'Placing...' : 'Order'}
+                  </button>
                 </div>
               </div>
             </div>
           ))}
           <div className="cart-card-footer">
             <span className="fs-5">Total: ₹{totalCost}</span>
-            <button className="cart-btn cart-btn-checkout" disabled={totalCost === 0}>
-              Proceed to Checkout
-            </button>
+           <Nav.Link as={Link} to="/userorders" state={{ userId: userId }}>
+                    My Orders
+                  </Nav.Link>
           </div>
         </div>
       )}
+      {orderError && <p className="cart-alert-error">{orderError}</p>}
     </div>
   );
 }

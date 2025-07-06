@@ -16,6 +16,7 @@ const canownerroutes = require('./routes/Canownerroutes');
 const canteenroutes = require('./routes/canteenroutes');
 const cartroutes = require('./routes/cartRoutes');
 const ratingsroutes = require('./routes/ratingsroutes');
+const orderroutes = require('./routes/orderroutes');
 
 app.use('/api/can', canteenroutes);
 app.use('/api/users', userroutes);
@@ -23,6 +24,7 @@ app.use('/api/item', fooditemsroutes);
 app.use('/api/canowner', canownerroutes);
 app.use('/api/ratings', ratingsroutes);
 app.use('/api/cart', cartroutes);
+app.use('/api/orders', orderroutes);
 
 mongoose
   .connect(process.env.mongoDB_URI)
